@@ -1,0 +1,24 @@
+{
+    "title": "#breakfast if transaction is in the morning, on a weekday and less than £5",
+    "conditions": [
+        {
+            "condition_type": "amount_less_than",
+            "amount_pence": 550
+        },
+        {
+            "condition_type": "transaction_before_time",
+            "time_hours": 10,
+            "time_mins": 0
+        },
+        {
+            "condition_type": "days_of_week_in_list",
+            "days": ["mon", "tue", "wed", "thu", "fri"]
+        }
+    ],
+    "actions": [
+        {
+            "action_type": "apply_tags",
+            "tags": ["breakfast"]
+        }
+    ]
+}

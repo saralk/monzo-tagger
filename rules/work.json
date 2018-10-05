@@ -1,0 +1,21 @@
+{
+    "title": "Apply #work if transaction was made in Media City on a weekday",
+    "conditions": [
+        {
+            "condition_type": "days_of_week_in_list",
+            "days": ["mon", "tue", "wed", "thu", "fri"]
+        },
+        {
+            "condition_type": "location_within_radius",
+            "coords": [53.4741, -2.2976],
+            "radius_meters": 500,
+            "result_if_unknown": false
+        }
+    ],
+    "actions": [
+        {
+            "action_type": "apply_tags",
+            "tags": ["work"]
+        }
+    ]
+}

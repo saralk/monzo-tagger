@@ -8,7 +8,7 @@ https://docs.monzo.com/#annotate-transaction
 # todo
 
 - [ ] auth to monzo api
-- [ ] get list of all transactions
+- [x] get list of all transactions
 - [ ] create all conditions
 - [ ] create all actions
 - [ ] run each transaction through the conditions

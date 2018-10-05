@@ -1,0 +1,60 @@
+{
+    "rules": [
+        {
+            "conditions": [
+                {
+                    "condition_type": "amount_greater_than",
+                    "amount_pence": 500
+                },
+                {
+                    "condition_type": "amount_less_than",
+                    "amount_pence": 1000
+                },
+                {
+                    "condition_type": "location_within_radius",
+                    "coords": [1,1],
+                    "radius_meters": 500,
+                    "result_if_unknown": true
+                },
+                {
+                    "condition_type": "merchant_category_in_list",
+                    "category": ["eating_out", "entertainment"]
+                },
+                {
+                    "condition_type": "merchant_name_matches_regex",
+                    "regex": "^BBC.*$"
+                },
+                {
+                    "condition_type": "days_of_week_in_list",
+                    "days": ["sat", "sun"]
+                },
+                {
+                    "condition_type": "transaction_before_time",
+                    "time_hours": 10,
+                    "time_mins": 30
+                },
+                {
+                    "condition_type": "transaction_after_time",
+                    "time_hours": 8,
+                    "time_mins": 0
+                }
+            ],
+            "actions": [
+                {
+                    "action_type": "apply_tags",
+                    "tags": ["breakfast", "work"]
+                },
+                {
+                    "action_type": "transfer_fixed_amount_to_pot",
+                    "amount_pence": 100,
+                    "pot_name": "foo"
+                },
+                {
+                    "action_type": "transfer_percentage_to_pot",
+                    "amount_pence": 5,
+                    "pot_name": "bar"
+                }
+            ]
+        }
+    ]
+}

@@ -24,16 +24,6 @@ class Monzo {
         }, cb);
     }
 
-    makePatchRequest(endpoint, params, cb) {
-        params.account_id = this.account_id;
-        const url = `${MONZO_API_DOMAIN}/${endpoint}?${this.convertObjectToUrlParams(params)}`; 
-        return request.patch(url, {
-            'auth': {
-                'bearer': this.access_token
-            }
-        }, cb);
-    }
-
     getTransactions(cb) {
         this.makeGetRequest('transactions', {'expand[]':'merchant'}, (err, res, body) => {
             if (err) {
@@ -43,11 +33,6 @@ class Monzo {
 
             cb(false, JSON.parse(body).transactions);
         });
-    }
-
-    setNotes(notes) {
-        this.makePatchRequest('transactions', {'metadata[notes]':notes});
-
     }
 }
 

@@ -1,34 +1,33 @@
 class RuleRunner {
     constructor(monzoClient, logger) {
-        this.monzo = monzoClient;  
+        this.monzo = monzoClient;
         this.logger = logger;
-    },
+    }
 
     run(transactions, rules) {
         transactions.forEach((txn) => {
-            this.logger.debug('');
-            this.logger.debug(`Checking txn ${txn.id}, ${txn.description} ${txn.amount}`);
+            if (this.checkConditions(txn, rules.conditions)) {
+                this.applyActions(txn, rules.actions);
+            }
+        });
+    }
 
-            rules.forEach((ruleset) => {
-
-                if (checkConditions(txn, ruleset.conditions)) {
-                    this.logger.debug(`txn passes all conditions`); 
-                } else {
-                    this.logger.debug('txn DOES NOT pass all conditions');
-                }
-
-            });
-        });      
+    applyActions(txn, actions) {
+        actions.forEach((action) => {
+            console.log(this.monzo);
+            const action_definiton = require(`./actions/${action.action_type}`);
+            action_definiton.apply(this.monzo, txn, action);
+        });
     }
 
     checkConditions(transaction, conditions) {
         return conditions.every((condition) => {
             const checker = require(`./conditions/${condition.condition_type}`);
             const result = checker.check(transaction, condition);
-            
-            this.logger.debug(`${JSON.stringify(condition)} is ${result}`);
 
             return result;
         });
     }
 }
+
+module.exports = RuleRunner

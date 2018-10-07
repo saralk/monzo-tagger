@@ -14,7 +14,6 @@ class RuleRunner {
 
     applyActions(txn, actions) {
         actions.forEach((action) => {
-            console.log(this.monzo);
             const action_definiton = require(`./actions/${action.action_type}`);
             action_definiton.apply(this.monzo, txn, action);
         });

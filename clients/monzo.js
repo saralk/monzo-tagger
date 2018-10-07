@@ -41,12 +41,16 @@ class Monzo {
                 return;
             }
 
+            console.log(body);;
+
             cb(false, JSON.parse(body).transactions);
         });
     }
 
-    setNotes(notes) {
-        this.makePatchRequest('transactions', {'metadata[notes]':notes});
+    setNotes(transaction_id, notes) {
+        this.makePatchRequest(`transactions/${transaction_id}`, {'metadata[notes]':notes}, (err, res, body) => {
+            console.log(body); 
+        });
     }
 }
 

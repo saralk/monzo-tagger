@@ -14,3 +14,4 @@ https://docs.monzo.com/#annotate-transaction
 - [x] run each transaction through the conditions
 - [x] apply each action
 - [ ] annotate transaction to say that it has been run through a ruleset
+- [ ] create tests

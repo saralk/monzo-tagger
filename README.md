@@ -9,8 +9,8 @@ https://docs.monzo.com/#annotate-transaction
 
 - [ ] auth to monzo api
 - [x] get list of all transactions
-- [ ] create all conditions
+- [x] create all conditions
 - [ ] create all actions
-- [ ] run each transaction through the conditions
-- [ ] apply each action
+- [x] run each transaction through the conditions
+- [x] apply each action
 - [ ] annotate transaction to say that it has been run through a ruleset

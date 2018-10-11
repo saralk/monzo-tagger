@@ -1,5 +1,7 @@
 # monzo-tagger
 
+monzo tagger will run through your transactions and apply rules based on the conditions you set
+
 # notes
 
 > Haven’t tested a direct debit specifically but you can add notes/tags to transactions by using the annotate transaction request with the key “notes”

@@ -68,16 +68,25 @@ class Monzo {
 
     addTags(transaction_id, tags) {
         const transaction = this.getTransactionFromCache(transaction_id);
-        const current_tags = transaction.notes.match(/#\w*/g);
+        const current_tags = transaction.notes.match(/#\w*/g) || [];
         const new_tags = tags.map((t) => {
             return '#' + t;
         });
         const tags_to_add = new_tags.filter((t) => {
             return current_tags.indexOf(t) === -1;
         }).join(' ');
-        this.logger.debug(transaction.id, 'current tags', current_tags, 'new', new_tags, 'add', tags_to_add);
+        const notes = [transaction.notes, tags_to_add].join(' ');
+
+        this.logger.debug([
+            `${transaction_id} ${transaction.description}`,
+            `current tags: ${current_tags.join()}`,
+            `new tags: ${new_tags.join()}`,
+            `tags to add: ${tags_to_add}`,
+            `notes: ${notes}`
+        ].join('\n'));
+
         this.makePatchRequest(`transactions/${transaction_id}`, {
-            'metadata[notes]': [transaction.notes, tags_to_add].join(' ')
+            'metadata[notes]': notes
         }, (err, res, body) => {});
     }
 }

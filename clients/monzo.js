@@ -3,9 +3,19 @@ const request = require('request');
 const MONZO_API_DOMAIN = 'https://api.monzo.com';
 
 class Monzo {
-    constructor(account_id, access_token) {
-        this.account_id = account_id,
-        this.access_token = access_token
+    constructor(account_id, access_token, logger) {
+        this.account_id = account_id;
+        this.access_token = access_token;
+        this.logger = logger;
+        this.cache = {};
+    }
+
+    cacheTransaction(transaction) {
+        this.cache[transaction.id] = transaction;
+    }
+
+    getTransactionFromCache(id) {
+        return this.cache[id];
     }
 
     convertObjectToUrlParams(params) {
@@ -16,7 +26,7 @@ class Monzo {
 
     makeGetRequest(endpoint, params, cb) {
         params.account_id = this.account_id;
-        const url = `${MONZO_API_DOMAIN}/${endpoint}?${this.convertObjectToUrlParams(params)}`; 
+        const url = `${MONZO_API_DOMAIN}/${endpoint}?${this.convertObjectToUrlParams(params)}`;
         return request(url, {
             'auth': {
                 'bearer': this.access_token
@@ -24,33 +34,51 @@ class Monzo {
         }, cb);
     }
 
-    makePatchRequest(endpoint, params, cb) {
-        params.account_id = this.account_id;
-        const url = `${MONZO_API_DOMAIN}/${endpoint}?${this.convertObjectToUrlParams(params)}`; 
+    makePatchRequest(endpoint, object, cb) {
+        const params = {
+            'account_id': this.account_id
+        }
+        const url = `${MONZO_API_DOMAIN}/${endpoint}?${this.convertObjectToUrlParams(params)}`;
         return request.patch(url, {
             'auth': {
                 'bearer': this.access_token
-            }
+            },
+            'form': object
         }, cb);
     }
 
     getTransactions(cb) {
-        this.makeGetRequest('transactions', {'expand[]':'merchant'}, (err, res, body) => {
+        this.makeGetRequest('transactions', {
+            'expand[]': 'merchant'
+        }, (err, res, body) => {
             if (err) {
-                cb(true); 
+                cb(true);
                 return;
             }
 
-            console.log(body);;
+            const transactions = JSON.parse(body).transactions;
 
-            cb(false, JSON.parse(body).transactions);
+            transactions.forEach((t) => {
+                this.cacheTransaction(t);
+            });
+
+            cb(false, transactions);
         });
     }
 
-    setNotes(transaction_id, notes) {
-        this.makePatchRequest(`transactions/${transaction_id}`, {'metadata[notes]':notes}, (err, res, body) => {
-            console.log(body); 
+    addTags(transaction_id, tags) {
+        const transaction = this.getTransactionFromCache(transaction_id);
+        const current_tags = transaction.notes.match(/#\w*/g);
+        const new_tags = tags.map((t) => {
+            return '#' + t;
         });
+        const tags_to_add = new_tags.filter((t) => {
+            return current_tags.indexOf(t) === -1;
+        }).join(' ');
+        this.logger.debug(transaction.id, 'current tags', current_tags, 'new', new_tags, 'add', tags_to_add);
+        this.makePatchRequest(`transactions/${transaction_id}`, {
+            'metadata[notes]': [transaction.notes, tags_to_add].join(' ')
+        }, (err, res, body) => {});
     }
 }
 

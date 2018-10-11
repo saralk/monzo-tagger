@@ -19,6 +19,7 @@
   "dependencies": {
     "env2": "^2.2.2",
     "moment": "^2.22.2",
+    "monzo-bank": "^0.1.12",
     "request": "^2.88.0",
     "winston": "^3.1.0"
   }
